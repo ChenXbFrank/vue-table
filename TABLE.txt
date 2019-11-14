@@ -1,0 +1,126 @@
+<template>
+    <div class="tables">
+        <div class="btnContent">
+            <el-button type="primary" size="small" @click="addFn">添加</el-button>
+        </div>
+        <el-table
+            :data="tableData"
+            border
+            style="width: 100%">
+            <el-table-column
+                label="下拉"
+                width="180">
+                <!-- template标签里面的内容可以替换 判断这个数据没有值的时候展示输入框，有值则展示内容 -->
+                <template slot-scope="scope">
+                   <span v-if="scope.row.date && scope.row._id">{{scope.row.date}}</span>
+                    <el-select v-model="scope.row.date" placeholder="请选择"  v-else>
+                        <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.label" >
+                            <!-- value可以对应更改为后端需要的参数 更改item中想要的那个键名 -->
+                        </el-option>
+                    </el-select>
+                </template>
+
+            </el-table-column>
+            <el-table-column
+                label="姓名"
+                width="180">
+                <template slot-scope="scope">
+                   <span v-if="scope.row.name && scope.row._id">{{scope.row.name}}</span>
+                   <el-input v-model="scope.row.name" placeholder="请输入姓名" v-else></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column
+                label="地址">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.address && scope.row._id">{{scope.row.address}}</span>
+                   <el-input v-model="scope.row.address" placeholder="请输入地址" v-else></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column
+                fixed="right"
+                label="操作"
+                width="100">
+                <template slot-scope="scope">
+                    <el-button @click="saveFn(scope.row)" type="text" size="small" v-if="!scope.row._id">保存</el-button>
+                    <el-button @click="delFn(scope.row)" type="text" size="small">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      tableData: [
+        {
+          _id: 1,
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄"
+        },
+        {
+          _id: 2,
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄"
+        }
+      ],
+       options: [{
+          value: '1',
+          label: '黄金糕'
+        }, {
+          value: '2',
+          label: '双皮奶'
+        },{
+          value: '3',
+          label: '北京烤鸭'
+        }],
+    };
+  },
+  methods: {
+    //   添加
+    addFn() {
+      this.tableData.push({
+        date: "", //
+        name: "",
+        address: ""
+      });
+    },
+    //   保存
+    saveFn(info) {
+      let { date, name, address } = info;
+      if (!date || !name || !address) {
+        this.$message({
+          message: "内容未填写完整，请检查后再进行提交",
+          type: "warning"
+        });
+        return;
+      }
+      console.log(info, '填写内容')
+      //   调用添加接口， 重新刷新数据
+    },
+    //   删除
+    delFn(info) {
+      //   调用删除接口， 重新刷新数据
+      console.log(info, "详情");
+    }
+  }
+};
+</script>
+<style>
+.tables {
+  width: 1200px;
+  margin: 40px auto;
+}
+.btnContent {
+  margin-bottom: 15px;
+  text-align: right;
+}
+</style>
+
+
